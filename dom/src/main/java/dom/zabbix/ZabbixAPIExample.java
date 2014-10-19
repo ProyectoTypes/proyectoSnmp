@@ -221,7 +221,7 @@ public class ZabbixAPIExample {
     },
     "auth": "038e1d7b1735c6a5436ee9eae095879e",
     "id": 1
-}
+}10108
  */
 	public static void requestItem(final String token)
 			throws JSONException {
@@ -230,9 +230,9 @@ public class ZabbixAPIExample {
 		JSONObject parametrosJson = new JSONObject();
 		
 		parametrosJson.put("output", "extend");
-		parametrosJson.put("hostid", "10084");
+		parametrosJson.put("host", "inventario");
 		Map<String, String> cpu = new HashMap<String,String>();
-		cpu.put("key", "vm.memory.size[total]");
+		cpu.put("key", "system.cpu.load");
 		parametrosJson.put("search", cpu);
 		
 		
@@ -276,7 +276,7 @@ public class ZabbixAPIExample {
 		parametrosJson.put("output","hostid");
 		parametrosJson.put("selectGroups","extend");
 		Map<String, String> filtro = new HashMap<String,String>();
-		filtro.put("host", "Zabbix server");
+		filtro.put("host", "inventario");
 
 		parametrosJson.put("filter",filtro);
 		
