@@ -151,42 +151,7 @@ public class Impresora {
 		this.creadoPor = creadoPor;
 	}
 
-	// //////////////////////////////////////
-	// Relacion Impresora/Computadora
-	// //////////////////////////////////////
-
-	@Persistent(mappedBy = "impresora", dependentElement = "False")
-	@Join
-	private SortedSet<Computadora> computadora = new TreeSet<Computadora>();
-
-	public SortedSet<Computadora> getComputadora() {
-		return computadora;
-	}
-
-	public void setComputadora(final SortedSet<Computadora> computadora) {
-		this.computadora = computadora;
-	}
-
-	@Named("Agregar Impresora")
-	public void agregarComputadora(final Computadora unaComputadora) {
-		if (unaComputadora == null || getComputadora().contains(unaComputadora)) {
-			return;
-		}
-		unaComputadora.limpiarImpresora();
-		unaComputadora.setImpresora(this);
-		getComputadora().add(unaComputadora);
-	}
-
-	@Named("Eliminar de Computadora")
-	public void limpiarComputadora(final Computadora unaComputadora) {
-		if (unaComputadora == null || !getComputadora().contains(unaComputadora)) {
-			return;
-		}
-		unaComputadora.setImpresora(null);
-		this.getComputadora().remove(unaComputadora);
-		return;
-	}
-
+	
 	// //////////////////////////////////////
 	// Habilitado
 	// //////////////////////////////////////
