@@ -25,11 +25,11 @@ public class Host extends ZabbixManager {
 	public String requestHostId(final String ip)
 			throws JSONException {
 		String token = this.obtenerToken(ip);
+		
 		this.getParametrosJson().put("output", "hostid");
 		this.getParametrosJson().put("selectGroups", "extend");
 		Map<String, String> filtro = new HashMap<String, String>();
-		filtro.put("host", "inventario");
-
+		filtro.put("host", HOST);
 		this.getParametrosJson().put("filter", filtro);
 
 		getObjetoJson().put("params", this.getParametrosJson());
