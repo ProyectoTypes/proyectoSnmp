@@ -7,7 +7,7 @@ import org.json.JSONException;
 
 import dom.zabbix.ZabbixManager;
 
-public class Item extends ZabbixManager {
+public abstract class ItemManager extends ZabbixManager {
 
 	public String requestCpuItem(final String ip) throws JSONException {
 
@@ -15,9 +15,8 @@ public class Item extends ZabbixManager {
 
 		this.getParametrosJson().put("output", "extend");
 		this.getParametrosJson().put("host", HOST);
-		Map<String, String> cpu = new HashMap<String, String>();
-		cpu.put("key", "system.cpu.load");
-		this.getParametrosJson().put("search", cpu);
+		
+		this.getParametros();
 
 		this.getObjetoJson().put("sortfield", "name");
 		this.getObjetoJson().put("params", this.getParametrosJson());
@@ -28,4 +27,6 @@ public class Item extends ZabbixManager {
 
 		return this.ejecutarJson().getString("result");
 	}
+	protected abstract void getParametros();
+	
 }
