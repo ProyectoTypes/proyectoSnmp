@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.snmp4j.smi.Integer32;
 
 import com.goebl.david.Webb;
 
