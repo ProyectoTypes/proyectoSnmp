@@ -2,6 +2,8 @@ package dom.zabbix;
 
 import org.json.JSONObject;
 
+import com.goebl.david.Webb;
+
 public abstract class ZabbixManager {
 
 	public ZabbixManager() {
@@ -29,8 +31,18 @@ public abstract class ZabbixManager {
 		this.parametrosJson = parametrosJson;
 	}
 
-	protected String getToken(final String ip) {
+	protected String obtenerToken(final String ip) {
 		return ZabbixAutenticacion.obtenerTokenPorIp(ip);
+	}
+	protected JSONObject ejecutarJson()
+	{
+		Webb webb = Webb.create();
+
+		return webb
+		.post("http://127.0.0.1/zabbix/api_jsonrpc.php")
+		.header("Content-Type", "application/json").useCaches(false)
+		.body(getObjetoJson()).ensureSuccess().asJsonObject().getBody();
+
 	}
 
 }
