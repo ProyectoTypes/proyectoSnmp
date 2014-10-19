@@ -38,8 +38,6 @@ import org.apache.isis.applib.query.QueryDefault;
 import dom.computadora.Computadora.CategoriaDisco;
 import dom.impresora.Impresora;
 import dom.impresora.ImpresoraRepositorio;
-import dom.usuario.Usuario;
-import dom.usuario.UsuarioRepositorio;
 
 @DomainService(menuOrder="10")
 @Named("COMPUTADORA")
@@ -67,26 +65,25 @@ public class ComputadoraRepositorio {
 	@NotContributed
 	@MemberOrder(sequence = "10")
 	@Named("Agregar Computadora")
-	public Computadora addComputadora(final @Named("Usuario") Usuario usuario,
+	public Computadora addComputadora(
 			final @Named("Direccion Ip") String ip,
 			final @Named("Mother") String mother,
 			final @Named("Procesador") String procesador,
 			final @Named("Disco") CategoriaDisco disco,
 			final @Named("Memoria") String memoria,
 			final @Optional @Named("Impresora") Impresora impresora) {
-		return nuevaComputadora(usuario, ip, mother, procesador, disco,
+		return nuevaComputadora( ip, mother, procesador, disco,
 				memoria, impresora, this.currentUserName());
 	}
 
 	@Programmatic
-	public Computadora nuevaComputadora(final Usuario usuario, final String ip,
+	public Computadora nuevaComputadora( final String ip,
 			final String mother, final String procesador,
 			final CategoriaDisco disco, final String memoria,
 			final Impresora impresora, final String creadoPor) {
 		final Computadora unaComputadora = container
 				.newTransientInstance(Computadora.class);
 		
-		unaComputadora.modifyUsuario(usuario);
 		unaComputadora.setIp(ip);
 		unaComputadora.setMother(mother);
 		unaComputadora.setProcesador(procesador);
@@ -103,17 +100,6 @@ public class ComputadoraRepositorio {
 		container.flush();
 		return unaComputadora;
 	}
-	public String validateAddComputadora(final @Named("Usuario") Usuario usuario,
-			final @Named("Direccion Ip") String ip,
-			final @Named("Mother") String mother,
-			final @Named("Procesador") String procesador,
-			final @Named("Disco") CategoriaDisco disco,
-			final @Named("Memoria") String memoria,
-			final @Optional @Named("Impresora") Impresora impresora) {
-		if (usuario.getComputadora()==null)
-			return null;
-		return "El Usuario ya posee una Computadora. Seleccione otro. "; // TODO: return reason why proposed value is invalid, null if valid
-	}
 
 	// //////////////////////////////////////
 	// Buscar Impresora
@@ -125,17 +111,6 @@ public class ComputadoraRepositorio {
 
 	}
 
-	// //////////////////////////////////////
-	// Buscar Usuario
-	// //////////////////////////////////////
-
-	@Named("Usuario")
-	@DescribedAs("Buscar el Usuario en mayuscula")
-	public List<Usuario> autoComplete0AddComputadora(
-			final @MinLength(2) String search) {
-		return usuarioRepositorio.autoComplete(search);
-
-	}
 
 	// //////////////////////////////////////
 	// Listar Computadora
@@ -196,8 +171,6 @@ public class ComputadoraRepositorio {
 	@javax.inject.Inject
 	private ComputadoraRepositorio computadoraRepositorio;
 
-	@javax.inject.Inject
-	private UsuarioRepositorio usuarioRepositorio;
 
 	@javax.inject.Inject
 	private ImpresoraRepositorio impresoraRepositorio;
