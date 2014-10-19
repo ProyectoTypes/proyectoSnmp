@@ -14,7 +14,7 @@ public class ZabbixTest {
 		try {
 			System.out.println("HOST ID "+ host.requestHostId("127.0.0.1"));
 			ItemManager cpu = new CpuItem();
-			System.out.println("CPU "+cpu.requestCpuItem("127.0.0.1"));
+			System.out.println("CPU "+cpu.requestItemGet("127.0.0.1"));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			System.out.println("ERROR: "+e.getMessage());

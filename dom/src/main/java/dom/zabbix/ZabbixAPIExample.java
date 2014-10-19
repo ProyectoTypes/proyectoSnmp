@@ -231,7 +231,7 @@ public class ZabbixAPIExample {
 		parametrosJson.put("output", "extend");
 		parametrosJson.put("host", "inventario");
 		Map<String, String> cpu = new HashMap<String,String>();
-		cpu.put("key", "system.cpu.load");
+		cpu.put("key_", "system.cpu.load");
 		parametrosJson.put("search", cpu);
 		
 		
