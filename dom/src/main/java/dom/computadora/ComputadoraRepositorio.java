@@ -24,22 +24,16 @@ package dom.computadora;
 import java.util.List;
 
 import org.apache.isis.applib.DomainObjectContainer;
-import org.apache.isis.applib.annotation.DescribedAs;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.Named;
 import org.apache.isis.applib.annotation.NotContributed;
-import org.apache.isis.applib.annotation.Optional;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.RegEx;
 import org.apache.isis.applib.query.QueryDefault;
 
-import dom.computadora.Computadora.CategoriaDisco;
-import dom.impresora.Impresora;
-import dom.impresora.ImpresoraRepositorio;
-
-@DomainService(menuOrder="10")
+@DomainService(menuOrder = "10")
 @Named("COMPUTADORA")
 public class ComputadoraRepositorio {
 
@@ -65,52 +59,20 @@ public class ComputadoraRepositorio {
 	@NotContributed
 	@MemberOrder(sequence = "10")
 	@Named("Agregar Computadora")
-	public Computadora addComputadora(
-			final @Named("Direccion Ip") String ip,
-			final @Named("Mother") String mother,
-			final @Named("Procesador") String procesador,
-			final @Named("Disco") CategoriaDisco disco,
-			final @Named("Memoria") String memoria,
-			final @Optional @Named("Impresora") Impresora impresora) {
-		return nuevaComputadora( ip, mother, procesador, disco,
-				memoria, impresora, this.currentUserName());
+	public Computadora addComputadora(final @Named("Direccion Ip") String ip) {
+		return nuevaComputadora(ip, this.currentUserName());
 	}
 
 	@Programmatic
-	public Computadora nuevaComputadora( final String ip,
-			final String mother, final String procesador,
-			final CategoriaDisco disco, final String memoria,
-			final Impresora impresora, final String creadoPor) {
+	public Computadora nuevaComputadora(final String ip, final String creadoPor) {
 		final Computadora unaComputadora = container
 				.newTransientInstance(Computadora.class);
-		
 		unaComputadora.setIp(ip);
-		unaComputadora.setMother(mother);
-		unaComputadora.setProcesador(procesador);
-		unaComputadora.setDisco(disco);
-		unaComputadora.setMemoria(memoria);
-		unaComputadora.setImpresora(impresora);
-		unaComputadora.setHabilitado(true);
 		unaComputadora.setCreadoPor(creadoPor);
-		if (impresora != null) {
-			impresora.agregarComputadora(unaComputadora);
-		}
-
 		container.persistIfNotAlready(unaComputadora);
 		container.flush();
 		return unaComputadora;
 	}
-
-	// //////////////////////////////////////
-	// Buscar Impresora
-	// //////////////////////////////////////
-
-	// @Named("Impresora")
-	public List<Impresora> choices6AddComputadora() {
-		return this.impresoraRepositorio.listar();
-
-	}
-
 
 	// //////////////////////////////////////
 	// Listar Computadora
@@ -171,7 +133,4 @@ public class ComputadoraRepositorio {
 	@javax.inject.Inject
 	private ComputadoraRepositorio computadoraRepositorio;
 
-
-	@javax.inject.Inject
-	private ImpresoraRepositorio impresoraRepositorio;
 }

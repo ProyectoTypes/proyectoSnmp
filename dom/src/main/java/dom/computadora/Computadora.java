@@ -21,8 +21,6 @@
  */
 package dom.computadora;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PrimaryKey;
@@ -35,11 +33,8 @@ import org.apache.isis.applib.annotation.Bookmarkable;
 import org.apache.isis.applib.annotation.DescribedAs;
 import org.apache.isis.applib.annotation.Hidden;
 import org.apache.isis.applib.annotation.MemberOrder;
-import org.apache.isis.applib.annotation.Named;
 import org.apache.isis.applib.annotation.ObjectType;
 
-import dom.impresora.Impresora;
-import dom.impresora.Impresora.TipoImpresora;
 import dom.impresora.ImpresoraRepositorio;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.APPLICATION)
@@ -66,6 +61,12 @@ import dom.impresora.ImpresoraRepositorio;
 @AutoComplete(repository = ComputadoraRepositorio.class, action = "autoComplete")
 @Bookmarkable
 public class Computadora implements Comparable<Computadora> {
+	/**
+	 * Constructor: Instanciar HARDWARE.
+	 */
+	public Computadora() {
+
+	}
 
 	// //////////////////////////////////////
 	// Identificacion en la UI
@@ -98,157 +99,25 @@ public class Computadora implements Comparable<Computadora> {
 		this.ip = ip;
 	}
 
-	// //////////////////////////////////////
-	// Mother (propiedad)
-	// //////////////////////////////////////
+	private Hardware hardware;
 
-	private String mother;
+	public Hardware getHardware() {
+		return hardware;
+	}
+
+	public void setHardware(Hardware hardware) {
+		this.hardware = hardware;
+	}
+
+	private Software software;
 
 	@javax.jdo.annotations.Column(allowsNull = "false")
-	@DescribedAs("Mother de la Computadora:")
-	@MemberOrder(sequence = "20")
-	public String getMother() {
-		return mother;
+	public Software getSoftware() {
+		return software;
 	}
 
-	public void setMother(final String mother) {
-		this.mother = mother;
-	}
-
-	// //////////////////////////////////////
-	// Procesador (propiedad)
-	// //////////////////////////////////////
-
-	private String procesador;
-
-	@javax.jdo.annotations.Column(allowsNull = "false")
-	@DescribedAs("Procesador de la Computadora:")
-	@MemberOrder(sequence = "30")
-	public String getProcesador() {
-		return procesador;
-	}
-
-	public void setProcesador(final String procesador) {
-		this.procesador = procesador;
-	}
-
-	// //////////////////////////////////////
-	// Disco (propiedad)
-	// //////////////////////////////////////
-
-	public static enum CategoriaDisco {
-		Seagate, Western, Otro;
-	}
-
-	private CategoriaDisco disco;
-
-	@javax.jdo.annotations.Column(allowsNull = "false")
-	public CategoriaDisco getDisco() {
-		return disco;
-	}
-
-	public void setDisco(final CategoriaDisco disco) {
-		this.disco = disco;
-	}
-
-	// //////////////////////////////////////
-	// Memoria (propiedad)
-	// //////////////////////////////////////
-
-	private String memoria;
-
-	@javax.jdo.annotations.Column(allowsNull = "false")
-	@DescribedAs("Memoria de la Computadora:")
-	@MemberOrder(sequence = "50")
-	public String getMemoria() {
-		return memoria;
-	}
-
-	public void setMemoria(final String memoria) {
-		this.memoria = memoria;
-	}
-
-	// //////////////////////////////////////
-	// Habilitado (propiedad)
-	// //////////////////////////////////////
-
-	public boolean habilitado;
-
-	@Hidden
-	@MemberOrder(sequence = "40")
-	public boolean getEstaHabilitado() {
-		return habilitado;
-	}
-
-	public void setHabilitado(final boolean habilitado) {
-		this.habilitado = habilitado;
-	}
-
-	// //////////////////////////////////////
-	// Impresora (propiedad)
-	// //////////////////////////////////////
-
-	private Impresora impresora;
-
-	@MemberOrder(sequence = "50")
-	@javax.jdo.annotations.Column(allowsNull = "true")
-	public Impresora getImpresora() {
-		return impresora;
-	}
-
-	public void setImpresora(final Impresora impresora) {
-		this.impresora = impresora;
-	}
-
-	public List<Impresora> choicesImpresora() {
-		return this.impresoraRepositorio.listar();
-
-	}
-
-	public void modifyImpresora(final Impresora impresora) {
-		Impresora currentImpresora = getImpresora();
-		if (impresora == null || impresora.equals(currentImpresora)) {
-			return;
-		}
-		impresora.agregarComputadora(this);
-		return;
-	}
-
-	public boolean hideQuitarImpresora() {
-		if (this.getImpresora() == null) {
-			return true;
-		}
-		return false;
-	}
-
-	@Named("Borrar Impresora")
-	public Computadora quitarImpresora() {
-		Impresora currentImpresora = getImpresora();
-		if (currentImpresora == null) {
-			return this;
-		}
-		currentImpresora.setComputadora(null);
-		setImpresora(null);
-		return this;
-	}
-
-	@Hidden
-	public void limpiarImpresora() {
-		Impresora impresora = getImpresora();
-		if (impresora == null) {
-			return;
-		}
-		impresora.limpiarComputadora(this);
-	}
-
-	@Named("Nueva Impresora")
-	public Impresora addImpresora(
-			final @Named("Modelo") String modeloImpresora,
-			final @Named("Fabricante") String fabricanteImpresora,
-			final @Named("Tipo") TipoImpresora tipoImpresora) {
-		return impresoraRepositorio.nuevaImpresora(modeloImpresora,
-				fabricanteImpresora, tipoImpresora, this.currentUserName());
-
+	public void setSoftware(Software software) {
+		this.software = software;
 	}
 
 	// //////////////////////////////////////
@@ -275,13 +144,10 @@ public class Computadora implements Comparable<Computadora> {
 		this.creadoPor = creadoPor;
 	}
 
-	
 	// //////////////////////////////////////
 	// Injected Services
 	// //////////////////////////////////////
 
-	@Inject
-	private ImpresoraRepositorio impresoraRepositorio;
 
 	@Inject
 	private DomainObjectContainer container;
@@ -291,4 +157,5 @@ public class Computadora implements Comparable<Computadora> {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
 }
