@@ -8,9 +8,9 @@ import org.json.JSONException;
 public class CpuItem extends ItemManager {
 
 	@Override
-	protected void getParametros() {
+	protected void cargarParametros() {
 		Map<String, String> cpu = new HashMap<String, String>();
-		cpu.put("key", "system.cpu.load");
+		cpu.put("key_", "system.cpu.load");
 		try {
 			this.getParametrosJson().put("search", cpu);
 		} catch (JSONException e) {
