@@ -1,8 +1,11 @@
 package dom.zabbix;
 
-public class ZabbixManager {
+public abstract class ZabbixManager {
 
-	
+	protected String getToken(final String ip)
+	{
+		return ZabbixAutenticacion.obtenerTokenPorIp(ip);
+	}
 	
 	
 	
