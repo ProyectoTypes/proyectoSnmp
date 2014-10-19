@@ -1,7 +1,11 @@
 package dom.zabbix;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.snmp4j.smi.Integer32;
 
 import com.goebl.david.Webb;
 
@@ -36,7 +40,7 @@ public class ZabbixAPIExample {
 			System.out.println("Authentication token: "
 					+ result.getString("result"));
 
-			requestGraphsFromHost(result.getString("result"));
+			requestItem(result.getString("result"));
 
 		} catch (JSONException je) {
 
@@ -82,7 +86,6 @@ public class ZabbixAPIExample {
 		System.out.println("Api Info: " + result.getString("result"));
 
 	}
-
 	/**
 	 * FORMATO JSON
 	 * <p>
@@ -171,23 +174,16 @@ public class ZabbixAPIExample {
 		System.out.println("Graficos Info: \n" + result.getString("result"));
 
 	}
+
 	/**
-	 * {
-    "jsonrpc": "2.0",
-    "method": "screen.get",
-    "params": {
-        "output": "extend",
-        "selectScreenItems": "extend",
-        "screenids": "26"
-    },
-    "auth": "038e1d7b1735c6a5436ee9eae095879e",
-    "id": 1
-}
+	 * { "jsonrpc": "2.0", "method": "screen.get", "params": { "output":
+	 * "extend", "selectScreenItems": "extend", "screenids": "26" }, "auth":
+	 * "038e1d7b1735c6a5436ee9eae095879e", "id": 1 }
+	 * 
 	 * @param token
 	 * @throws JSONException
 	 */
-	public static void requestScreen(final String token)
-			throws JSONException {
+	public static void requestScreen(final String token) throws JSONException {
 		JSONObject objetoJson = new JSONObject();
 		JSONObject parametrosJson = new JSONObject();
 		parametrosJson.put("output", "extend");
@@ -211,5 +207,95 @@ public class ZabbixAPIExample {
 		System.out.println("Pantalla Info: \n" + result.getString("result"));
 
 	}
+/**
+ * {
+    "jsonrpc": "2.0",
+    "method": "item.get",
+    "params": {
+        "output": "extend",
+        "hostids": "10084",
+        "search": {
+            "key_": "system"
+        },
+        "sortfield": "name"
+    },
+    "auth": "038e1d7b1735c6a5436ee9eae095879e",
+    "id": 1
+}
+ */
+	public static void requestItem(final String token)
+			throws JSONException {
+		
+		JSONObject objetoJson = new JSONObject();
+		JSONObject parametrosJson = new JSONObject();
+		
+		parametrosJson.put("output", "extend");
+		parametrosJson.put("hostid", "10084");
+		Map<String, String> cpu = new HashMap<String,String>();
+		cpu.put("key", "vm.memory.size[total]");
+		parametrosJson.put("search", cpu);
+		
+		
+		objetoJson.put("sortfield","name");
+		objetoJson.put("params", parametrosJson);
+		objetoJson.put("jsonrpc", "2.0");
+		objetoJson.put("method", "item.get");
+		objetoJson.put("auth", token);
+		objetoJson.put("id", "1");
 
+		Webb webb = Webb.create();
+
+		System.out.println("Datos enviados: " + objetoJson.toString());
+
+		JSONObject result = webb
+				.post("http://127.0.0.1/zabbix/api_jsonrpc.php")
+				.header("Content-Type", "application/json").useCaches(false)
+				.body(objetoJson).ensureSuccess().asJsonObject().getBody();
+
+		System.out.println("Carga del Procesador: \n" + result.getString("result"));
+	}
+
+/**{
+	    "jsonrpc": "2.0",
+	    "method": "host.get",
+	    "params": {
+	        "output": ["hostid"],
+	        "selectGroups": "extend",
+	        "filter": {
+	            "host": [
+	                "Zabbix server"
+	            ]
+	        }
+	    },
+	    "auth": "038e1d7b1735c6a5436ee9eae095879e",
+	    "id": 2
+	}*/
+	public static void requestHostId(final String token) throws JSONException {
+		JSONObject objetoJson = new JSONObject();
+		JSONObject parametrosJson = new JSONObject();
+		parametrosJson.put("output","hostid");
+		parametrosJson.put("selectGroups","extend");
+		Map<String, String> filtro = new HashMap<String,String>();
+		filtro.put("host", "Zabbix server");
+
+		parametrosJson.put("filter",filtro);
+		
+		objetoJson.put("params",parametrosJson);
+		objetoJson.put("jsonrpc", "2.0");
+		objetoJson.put("method", "host.get");
+		objetoJson.put("auth", token);
+		objetoJson.put("id", "2");
+
+		Webb webb = Webb.create();
+
+		System.out.println("Datos enviados: " + objetoJson.toString());
+
+		JSONObject result = webb
+				.post("http://127.0.0.1/zabbix/api_jsonrpc.php")
+				.header("Content-Type", "application/json").useCaches(false)
+				.body(objetoJson).ensureSuccess().asJsonObject().getBody();
+
+		System.out.println("Api Info: " + result.getString("result"));
+
+	}
 }
