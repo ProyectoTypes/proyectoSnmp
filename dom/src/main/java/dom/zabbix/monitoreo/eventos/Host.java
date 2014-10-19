@@ -1,4 +1,4 @@
-package dom.zabbix.monitoreo;
+package dom.zabbix.monitoreo.eventos;
 
 import java.util.HashMap;
 import java.util.Map;
