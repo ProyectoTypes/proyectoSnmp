@@ -22,7 +22,12 @@ public abstract class ItemManager extends ZabbixManager {
 		this.getObjetoJson().put("auth", token);
 		this.getObjetoJson().put("id", "1");
 
-		return this.ejecutarJson().getString("result");
+		String resultado ="";
+		String[] cadena = this.ejecutarJson().getString("result").split(",");
+		for(int i =0 ; i<cadena.length;i++)
+			if(cadena[i].startsWith("lastvalue"))
+				resultado = cadena[0].split(":")[1];
+		return resultado;
 	}
 
 	/**
