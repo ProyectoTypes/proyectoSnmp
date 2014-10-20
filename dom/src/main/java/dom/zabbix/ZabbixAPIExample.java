@@ -38,8 +38,8 @@ public class ZabbixAPIExample {
 
 			System.out.println("Authentication token: "
 					+ result.getString("result"));
-
-			requestItem(result.getString("result"));
+			String token = result.getString("result");
+			requestItem(token);
 
 		} catch (JSONException je) {
 
