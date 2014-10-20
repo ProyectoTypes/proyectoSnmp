@@ -26,12 +26,13 @@ import java.util.List;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.MemberOrder;
-import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.Named;
 import org.apache.isis.applib.annotation.NotContributed;
 import org.apache.isis.applib.annotation.Programmatic;
-import org.apache.isis.applib.annotation.RegEx;
 import org.apache.isis.applib.query.QueryDefault;
+import org.json.JSONException;
+
+import dom.zabbix.monitoreo.item.CpuItem;
 
 @DomainService(menuOrder = "10")
 @Named("COMPUTADORA")
@@ -68,7 +69,19 @@ public class ComputadoraRepositorio {
 		final Computadora unaComputadora = container
 				.newTransientInstance(Computadora.class);
 		unaComputadora.setIp(ip);
-		unaComputadora.setCreadoPor(creadoPor);
+		unaComputadora.setMemoria("");
+		CpuItem cpu = new CpuItem();
+		
+		//FIXME: El split del string no se deberia hacer aca. Es particular de cada clase.
+		String consultacpu = null;
+		try {
+			consultacpu = cpu.requestItemGet(ip);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] arreglo = consultacpu.split(",");
+		unaComputadora.setProcesocpu(arreglo[18]);
 		container.persistIfNotAlready(unaComputadora);
 		container.flush();
 		return unaComputadora;
@@ -90,29 +103,7 @@ public class ComputadoraRepositorio {
 		return listaComputadoras;
 	}
 
-	// //////////////////////////////////////
-	// Buscar Computadora
-	// //////////////////////////////////////
 
-	@MemberOrder(sequence = "30")
-	public List<Computadora> buscar(
-			final @RegEx(validation = "[a-zA-Záéíóú]{2,15}(\\s[a-zA-Záéíóú]{2,15})*") @Named("Ip") @MinLength(2) String apellido) {
-		final List<Computadora> listaComputadoras = this.container
-				.allMatches(new QueryDefault<Computadora>(Computadora.class,
-						"buscarPorIp", "creadoPor", this.currentUserName(),
-						"ip", apellido.toUpperCase().trim()));
-		if (listaComputadoras.isEmpty())
-			this.container
-					.warnUser("No se encontraron Computadoras cargados en el sistema.");
-		return listaComputadoras;
-	}
-
-	@Programmatic
-	public List<Computadora> autoComplete(@Named("Ip") @MinLength(2) String ip) {
-		return container.allMatches(new QueryDefault<Computadora>(
-				Computadora.class, "autoCompletePorComputadora", "creadoPor",
-				this.currentUserName(), "ip", ip.toUpperCase().trim()));
-	}
 
 	// //////////////////////////////////////
 	// CurrentUserName
@@ -129,8 +120,5 @@ public class ComputadoraRepositorio {
 	@javax.inject.Inject
 	private DomainObjectContainer container;
 
-	@SuppressWarnings("unused")
-	@javax.inject.Inject
-	private ComputadoraRepositorio computadoraRepositorio;
-
+	
 }
