@@ -10,7 +10,7 @@ public class RamItem extends ItemManager {
 	@Override
 	protected void cargarParametros() {
 		Map<String, String> cpu = new HashMap<String, String>();
-		cpu.put("key_", "system.cpu.load");//Renombrar la key para cada caso.
+		cpu.put("key_", "vm.memory.size[total]");//Renombrar la key para cada caso.
 		try {
 			this.getParametrosJson().put("search", cpu);
 		} catch (JSONException e) {
