@@ -35,35 +35,16 @@ import org.apache.isis.applib.annotation.Hidden;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.ObjectType;
 
-import dom.impresora.ImpresoraRepositorio;
-
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.APPLICATION)
 @javax.jdo.annotations.Version(strategy = VersionStrategy.VERSION_NUMBER, column = "version")
 @javax.jdo.annotations.Uniques({ @javax.jdo.annotations.Unique(name = "Computadora_ip_must_be_unique", members = {
 		"creadoPor", "ip" }) })
-@javax.jdo.annotations.Queries({
-		@javax.jdo.annotations.Query(name = "autoCompletePorComputadora", language = "JDOQL", value = "SELECT "
-				+ "FROM dom.computadora.Computadora "
-				+ "WHERE creadoPor == :creadoPor && " + "ip.indexOf(:ip) >= 0"),
-		@javax.jdo.annotations.Query(name = "eliminarComputadoraFalse", language = "JDOQL", value = "SELECT "
-				+ "FROM dom.computadora.Computadora "
-				+ "WHERE creadoPor == :creadoPor "
-				+ "   && habilitado == false"),
-		@javax.jdo.annotations.Query(name = "eliminarComputadoraTrue", language = "JDOQL", value = "SELECT "
-				+ "FROM dom.computadora.Computadora "
-				+ "WHERE habilitado == true"),
-		@javax.jdo.annotations.Query(name = "buscarPorIp", language = "JDOQL", value = "SELECT "
-				+ "FROM dom.computadora.Computadora "
-				+ "WHERE creadoPor == :creadoPor "
-				+ "   && ip.indexOf(:ip) >= 0") })
 @ObjectType("COMPUTADORA")
 @Audited
 @AutoComplete(repository = ComputadoraRepositorio.class, action = "autoComplete")
 @Bookmarkable
 public class Computadora implements Comparable<Computadora> {
-	/**
-	 * Constructor: Instanciar HARDWARE.
-	 */
+
 	public Computadora() {
 
 	}
@@ -99,25 +80,26 @@ public class Computadora implements Comparable<Computadora> {
 		this.ip = ip;
 	}
 
-	private Hardware hardware;
-
-	public Hardware getHardware() {
-		return hardware;
-	}
-
-	public void setHardware(Hardware hardware) {
-		this.hardware = hardware;
-	}
-
-	private Software software;
+	private String memoria;
 
 	@javax.jdo.annotations.Column(allowsNull = "false")
-	public Software getSoftware() {
-		return software;
+	public String getMemoria() {
+		return memoria;
 	}
 
-	public void setSoftware(Software software) {
-		this.software = software;
+	public void setMemoria(String memoria) {
+		this.memoria = memoria;
+	}
+
+	private String procesocpu;
+
+	@javax.jdo.annotations.Column(allowsNull = "false")
+	public String getProcesocpu() {
+		return procesocpu;
+	}
+
+	public void setProcesocpu(String procesocpu) {
+		this.procesocpu = procesocpu;
 	}
 
 	// //////////////////////////////////////
@@ -129,25 +111,8 @@ public class Computadora implements Comparable<Computadora> {
 	}
 
 	// //////////////////////////////////////
-	// creadoPor
-	// //////////////////////////////////////
-
-	private String creadoPor;
-
-	@Hidden
-	@javax.jdo.annotations.Column(allowsNull = "false")
-	public String getCreadoPor() {
-		return creadoPor;
-	}
-
-	public void setCreadoPor(final String creadoPor) {
-		this.creadoPor = creadoPor;
-	}
-
-	// //////////////////////////////////////
 	// Injected Services
 	// //////////////////////////////////////
-
 
 	@Inject
 	private DomainObjectContainer container;
