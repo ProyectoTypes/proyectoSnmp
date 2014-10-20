@@ -33,6 +33,7 @@ import org.apache.isis.applib.query.QueryDefault;
 import org.json.JSONException;
 
 import dom.zabbix.monitoreo.item.CpuItem;
+import dom.zabbix.monitoreo.item.RamItem;
 
 @DomainService(menuOrder = "10")
 @Named("COMPUTADORA")
@@ -60,28 +61,19 @@ public class ComputadoraRepositorio {
 	@NotContributed
 	@MemberOrder(sequence = "10")
 	@Named("Agregar Computadora")
-	public Computadora addComputadora(final @Named("Direccion Ip") String ip) {
+	public Computadora addComputadora(final @Named("Direccion Ip") String ip) throws JSONException {
 		return nuevaComputadora(ip, this.currentUserName());
 	}
 
 	@Programmatic
-	public Computadora nuevaComputadora(final String ip, final String creadoPor) {
+	public Computadora nuevaComputadora(final String ip, final String creadoPor) throws JSONException {
 		final Computadora unaComputadora = container
 				.newTransientInstance(Computadora.class);
 		unaComputadora.setIp(ip);
-		unaComputadora.setMemoria("");
+		RamItem ram = new RamItem();
+		unaComputadora.setMemoria(ram.requestItemGet(ip));
 		CpuItem cpu = new CpuItem();
-		
-		//FIXME: El split del string no se deberia hacer aca. Es particular de cada clase.
-		String consultacpu = null;
-		try {
-			consultacpu = cpu.requestItemGet(ip);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String[] arreglo = consultacpu.split(",");
-		unaComputadora.setProcesocpu(arreglo[18]);
+		unaComputadora.setProcesocpu(cpu.requestItemGet(ip));
 		container.persistIfNotAlready(unaComputadora);
 		container.flush();
 		return unaComputadora;
