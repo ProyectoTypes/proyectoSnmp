@@ -12,7 +12,7 @@ public abstract class ItemManager extends ZabbixManager {
 
 		this.getParametrosJson().put("output", "extend");
 		this.getParametrosJson().put("host", HOST);
-		
+
 		this.cargarParametros();
 
 		this.getObjetoJson().put("sortfield", "name");
@@ -24,6 +24,11 @@ public abstract class ItemManager extends ZabbixManager {
 
 		return this.ejecutarJson().getString("result");
 	}
+
+	/**
+	 * Metodo abtrascto del template method. Cada subclase implementara este
+	 * metodo a su criterio.
+	 */
 	protected abstract void cargarParametros();
-	
+
 }
